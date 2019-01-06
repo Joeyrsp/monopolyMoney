@@ -4,10 +4,15 @@
     justify-content: space-between;
 }
 
-.sender {
-    color: red;
-}
-
 .button {
     width: 100%;
+}
+
+.sender {
+    background-color: red;
+}
+
+.reciever {
+    outline-style: solid;
+    outline: 5px;
 }

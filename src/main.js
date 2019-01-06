@@ -4,8 +4,10 @@ const startingBalance = 1500
 
 const state = {
     players: [],
-    sender: 0,
-    reciever: 0
+    senderID: 0,
+    recieverID: 0,
+    inputAmount: 0,
+    inputName: ""
 }
 
 const actions = {
@@ -32,12 +34,17 @@ const actions = {
 
     transfer: ({fromID, toID, amount}) => (state, actions) => {
 
-
         let sender = state.players[fromID]
         let reciever = state.players[toID]
 
         actions.setBalance({id: fromID, balance: sender.balance - amount})
         actions.setBalance({id: toID, balance: reciever.balance + amount})
+
+    },
+
+    setSelected: ({event, element}) => state => {
+
+        console.log(event, element);
 
     }
 
@@ -52,29 +59,41 @@ const view = (state, actions) =>
                     h("td", {}, "Balance"),
                 ]),
                 state.players.map((player, index) => (
-                    h("tr", {}, [
+                    h("tr", () => {
+                        var obj = {}
+                        var str = ""
+                        if (index == state.senderID) {
+                            str += "sender"
+                        }
+                        if (index == state.recieverID) {
+                            str += "reciever"
+                        }
+                        if (str) {
+                            obj.class = str
+                        }
+                        console.log(str, obj);
+                        return obj
+                    }, [
                         h("td", {}, player.name),
                         h("td", {}, ` $${player.balance}`),
                     ])
                 ))
             ]),
-            h("div", {}, [
-                h("table", {}, [
-                    h("tr", {}, [
-                        h("input", {type: "textarea"})
-                    ]),
-                    h("tr", {}, [
-                        h("input", {type: "button", class: "button", value:"Pay"})
-                    ]),
-                    h("tr", {}, [
-                        h("input", {type: "button", class: "button", value:"Transfer"})
-                    ]),
-                    h("tr", {}, [
-                        h("input", {type: "textarea"})
-                    ]),
-                    h("tr", {}, [
-                        h("input", {type: "button", class: "button", value:"Add Player"})
-                    ])
+            h("table", {}, [
+                h("tr", {}, [
+                    h("input", {type: "textarea", id: "inputAmount", onInput: () => {state.inputAmount = this.value}})
+                ]),
+                h("tr", {}, [
+                    h("input", {type: "button", class: "button", value: "Pay"})
+                ]),
+                h("tr", {}, [
+                    h("input", {type: "button", class: "button", value: "Transfer", onClick: main.transfer({fromID: state.senderID, toID: state.recieverID, amount: state.inputAmount})})
+                ]),
+                h("tr", {}, [
+                    h("input", {type: "textarea", id: "inputName"})
+                ]),
+                h("tr", {}, [
+                    h("input", {type: "button", class: "button", value: "Add Player", onmousedown: ""})
                 ])
             ])
         ])
