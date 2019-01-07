@@ -9,10 +9,9 @@
 }
 
 .sender {
-    background-color: red;
+    background-color: lightsalmon;
 }
 
 .reciever {
-    outline-style: solid;
-    outline: 5px;
+    background-color: lightblue;
 }

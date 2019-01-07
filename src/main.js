@@ -81,19 +81,19 @@ const view = (state, actions) =>
             ]),
             h("table", {}, [
                 h("tr", {}, [
-                    h("input", {type: "textarea", id: "inputAmount", oninput: () => {state.inputAmount = this.value}})
+                    h("input", {type: "textarea", id: "inputAmount", onInput: () => {state.inputAmount = this.value}})
                 ]),
                 h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Pay", onclick: actions.setBalance({id: toID, balance: reciever.balance + amount})})
+                    h("input", {type: "button", class: "button", value: "Pay"})
                 ]),
                 h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Transfer", onclick: actions.transfer({fromID: state.senderID, toID: state.recieverID, amount: state.inputAmount})})
+                    h("input", {type: "button", class: "button", value: "Transfer", onClick: main.transfer({fromID: state.senderID, toID: state.recieverID, amount: state.inputAmount})})
                 ]),
                 h("tr", {}, [
                     h("input", {type: "textarea", id: "inputName"})
                 ]),
                 h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Add Player", onclick: actions.addPlayer({name: "String", balance: startingBalance})})
+                    h("input", {type: "button", class: "button", value: "Add Player", onmousedown: ""})
                 ])
             ])
         ])
