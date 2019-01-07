@@ -1,11 +1,30 @@
 html, input, select, option, button {
     font-family: monospace;
-    font-size: 12px;
+    font-size: 14px;
+}
+
+label {
+    display: inline-block;
+}
+
+button {
+    width: 100%;
+}
+
+html .w-50 {
+    width: 50%;
+}
+
+body {
+    margin: 0px;
+    min-height: 100vh;
 }
 
 .container {
     width: 100%;
+    min-height: 100vh;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
 }
 
@@ -13,21 +32,29 @@ html, input, select, option, button {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    width: 75%;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: flex-start;
+    align-content: flex-start;
+    width: 100%;
+    font-size: 18px;
 }
 
 .scorecard {
-    min-width: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
+    min-width: 140px;
+    margin: 5px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    /* flex: 1 1 auto; */
 }
 
 .scorecard > * {
-    padding: 10px 5px
+    padding: 5px;
 }
 
 .scorecard__name {
-    border-bottom: 1px solid black
+    border-bottom: 1px solid black;
+    padding-bottom: 15px;
 }
 
 .scorecard__balance {
@@ -41,10 +68,7 @@ html, input, select, option, button {
 }
 
 .sender {
-    /* background-color: lightsalmon; */
-    outline-style: solid;
-    outline-width: 2px;
-    outline-color: lightsalmon;
+    outline: 3px solid lightsalmon;
 }
 
 .recipient {
@@ -53,6 +77,8 @@ html, input, select, option, button {
 
 .sidebar {
     width: 300px;
+    flex-shrink: 0;
+    background-color: #f0f0f0;
 }
 
 .controls {
@@ -70,16 +96,4 @@ html, input, select, option, button {
 .controls > * {
     margin-top: 2.5px;
     margin-bottom: 2.5px;
-}
-
-label {
-    display: inline-block;
-}
-
-button {
-    width: 100%;
-}
-
-html .w-50 {
-    width: 50%;
 }

@@ -57,6 +57,8 @@ const actions = {
         return {
             ...state,
             players,
+            senderID: -1,
+            recipientID: -1,
             removalID: -1
         }
     },
@@ -158,7 +160,7 @@ const view = (state, actions) =>
                 ]),
                 h("div", { class: "controls"}, [
                     h("input", {type: "textarea", value: state.creationName, oninput: event => actions.setCreationName(event.target.value), onkeyup: event => {if (event.key == "Enter") {actions.addPlayer({name: state.creationName})}}}),
-                    h("button", {onclick: event => actions.addPlayer({name: state.creationName})}, "Add Player"),
+                    h("button", {onclick: event => actions.addPlayer(state.creationName != "" ? {name: state.creationName} : {})}, "Add Player"),
                     h("select", {onchange: event => actions.setRemovalID(event.target.value)}, state.players.map((player, index) => h("option", {value: index}, player.name))),
                     h("button", {onclick: event => actions.removePlayer(state.removalID)}, "Remove Player")
                 ])
