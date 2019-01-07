@@ -5,7 +5,7 @@ const startingBalance = 1500
 const state = {
     players: [],
     senderID: 0,
-    recieverID: 0,
+    recieverID: 1,
     inputAmount: 0,
     inputName: ""
 }
@@ -21,8 +21,8 @@ const actions = {
     },
 
     setBalance: ({id, balance}) => state => {
-
-        let player = state.players[id]
+        
+        let player = { ...state.players[id] }
         player.balance = balance
 
         let players = [ ...state.players ]
@@ -34,6 +34,8 @@ const actions = {
 
     transfer: ({fromID, toID, amount}) => (state, actions) => {
 
+        // console.log(fromID, toID, amount);
+        
         let sender = state.players[fromID]
         let reciever = state.players[toID]
 
@@ -42,38 +44,40 @@ const actions = {
 
     },
 
-    setSelected: ({event, element}) => state => {
-
-        console.log(event, element);
-
+    setInputAmount: inputAmount => state => {
+        return Object.assign(state, { inputAmount: parseInt(inputAmount) })
     }
+    
 
 }
 
 const view = (state, actions) =>
     h("main", {}, [
-        h("div", {class: "container"}, [
+        // (() => console.log(state))(),
+        h("div", { class: "container" }, [
             h("table", {}, [
                 h("tr", {}, [
                     h("td", {}, "Name"),
                     h("td", {}, "Balance"),
                 ]),
                 state.players.map((player, index) => (
-                    h("tr", () => {
-                        var obj = {}
-                        var str = ""
-                        if (index == state.senderID) {
-                            str += "sender"
-                        }
-                        if (index == state.recieverID) {
-                            str += "reciever"
-                        }
-                        if (str) {
-                            obj.class = str
-                        }
-                        console.log(str, obj);
-                        return obj
-                    }, [
+                    h("tr", {}, [
+            //         h("tr", (() => {
+            //             var obj = {
+            //                 key: index
+            //             }
+            //             var str = ""
+            //             if (index == state.senderID) {
+            //                 str += "sender"
+            //             }
+            //             if (index == state.recieverID) {
+            //                 str += "reciever"
+            //             }
+            //             if (str) {
+            //                 obj.class = str
+            //             }
+            //             return obj
+            //         })(), [
                         h("td", {}, player.name),
                         h("td", {}, ` $${player.balance}`),
                     ])
@@ -81,16 +85,16 @@ const view = (state, actions) =>
             ]),
             h("table", {}, [
                 h("tr", {}, [
-                    h("input", {type: "textarea", id: "inputAmount", onInput: () => {state.inputAmount = this.value}})
+                    h("input", {type: "number", id: "inputAmount", value: state.inputAmount, oninput: event => actions.setInputAmount(event.target.value)})
                 ]),
                 h("tr", {}, [
                     h("input", {type: "button", class: "button", value: "Pay"})
                 ]),
                 h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Transfer", onClick: main.transfer({fromID: state.senderID, toID: state.recieverID, amount: state.inputAmount})})
+                    h("input", {type: "button", class: "button", value: "Transfer", onclick: () => actions.transfer({fromID: 0, toID: 1, amount: 200})})
                 ]),
                 h("tr", {}, [
-                    h("input", {type: "textarea", id: "inputName"})
+                    h("input", {type: "", id: "inputName"})
                 ]),
                 h("tr", {}, [
                     h("input", {type: "button", class: "button", value: "Add Player", onmousedown: ""})
@@ -109,4 +113,4 @@ main.transfer({fromID: Int, toID: Int, amount: Int})
 
 main.addPlayer({name: "joey", balance: startingBalance})
 main.addPlayer({name: "astrid", balance: startingBalance})
-main.transfer({fromID: 0, toID: 1, amount: 200})
+// setTimeout(() => main.transfer({fromID: 0, toID: 1, amount: 200}), 1000)
