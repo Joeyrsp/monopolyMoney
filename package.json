@@ -13,5 +13,8 @@
   ],
   "dependencies": {
     "hyperapp": "^1.2.9"
+  },
+  "devDependencies": {
+    "classcat": "^3.2.5"
   }
 }

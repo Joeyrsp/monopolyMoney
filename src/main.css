@@ -1,17 +1,81 @@
+html, input, select, option, button {
+    font-family: monospace;
+    font-size: 12px;
+}
+
 .container {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.button {
-    width: 100%;
+.scoreboard {
+    display: flex;
+    flex-direction: row;
+    width: 75%;
+}
+
+.scorecard {
+    min-width: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.scorecard > * {
+    padding: 5px;
+}
+
+.scorecard__name {
+    border-bottom: 1px solid black
+}
+
+.scorecard__balance {
+    display: flex;
+    justify-content: space-between;
+}
+
+.scorecard.negative * {
+    color: red;
+    border-color: red;
 }
 
 .sender {
     background-color: lightsalmon;
 }
 
-.reciever {
+.recipient {
     background-color: lightblue;
+}
+
+.sidebar {
+    width: 300px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.controls * {
+    width: 100%;
+}
+
+.controls > * {
+    margin-top: 2.5px;
+    margin-bottom: 2.5px;
+}
+
+label {
+    display: inline-block;
+}
+
+button {
+    width: 100%;
+}
+
+html .w-50 {
+    width: 50%;
 }

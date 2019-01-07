@@ -1,103 +1,129 @@
 import { h, app } from "hyperapp"
+import cc from "classcat"
 
 const startingBalance = 1500
 
 const state = {
     players: [],
-    senderID: 0,
-    recieverID: 1,
-    inputAmount: 0,
-    inputName: ""
+    senderID: -1,
+    recipientID: -1,
+    transferAmount: 100,
+    newPlayerName: "",
 }
 
 const actions = {
 
-    addPlayer: player => state => {
+    setTransferAmount: transferAmount => state => ({
+        ...state,
+        transferAmount: parseInt(transferAmount) 
+    }),
 
-        let players = [ ...state.players, player ]
+    addPlayer: player => state => ({
+        ...state,
+        players: [ ...state.players, { name: `Player ${state.players.length + 1}`, balance: startingBalance, ...player} ]
+    }),
 
-        return Object.assign(state, { players })
+    setSenderID: id => state => ({
+        ...state,
+        senderID: parseInt(id)
+    }),
 
-    },
+    setRecipientID: id => state => ({
+        ...state,
+        recipientID: parseInt(id)
+    }),
 
-    setBalance: ({id, balance}) => state => {
+    setPlayerBalance: ({id, balance}) => state => {
         
-        let player = { ...state.players[id] }
-        player.balance = balance
-
         let players = [ ...state.players ]
-        players[id] = player
+        players[id] = {
+            ...players[id],
+            balance
+        }
 
-        return Object.assign(state, { players })
+        return {
+            ...state,
+            players
+        }
 
     },
 
-    transfer: ({fromID, toID, amount}) => (state, actions) => {
+    transferPlayerFunds: ({fromID, toID, amount}) => (state, actions) => {
 
-        // console.log(fromID, toID, amount);
-        
         let sender = state.players[fromID]
-        let reciever = state.players[toID]
+        let recipient = state.players[toID]
 
-        actions.setBalance({id: fromID, balance: sender.balance - amount})
-        actions.setBalance({id: toID, balance: reciever.balance + amount})
+        console.log(fromID, toID)
+        if (fromID !== toID) {
+            if (fromID > -1)
+                actions.setPlayerBalance({id: fromID, balance: parseInt(sender.balance) - parseInt(amount)})
+            if (toID > -1)
+                actions.setPlayerBalance({id: toID, balance: parseInt(recipient.balance) + parseInt(amount)})
+        }
 
     },
-
-    setInputAmount: inputAmount => state => {
-        return Object.assign(state, { inputAmount: parseInt(inputAmount) })
-    }
     
 
 }
+
+const getPlayerIDByName = (name, players) => players.map(p => p.name).indexOf(name)
 
 const view = (state, actions) =>
     h("main", {}, [
         // (() => console.log(state))(),
         h("div", { class: "container" }, [
-            h("table", {}, [
-                h("tr", {}, [
-                    h("td", {}, "Name"),
-                    h("td", {}, "Balance"),
-                ]),
+            h("section", { class: "scoreboard"}, [
                 state.players.map((player, index) => (
-                    h("tr", {}, [
-            //         h("tr", (() => {
-            //             var obj = {
-            //                 key: index
-            //             }
-            //             var str = ""
-            //             if (index == state.senderID) {
-            //                 str += "sender"
-            //             }
-            //             if (index == state.recieverID) {
-            //                 str += "reciever"
-            //             }
-            //             if (str) {
-            //                 obj.class = str
-            //             }
-            //             return obj
-            //         })(), [
-                        h("td", {}, player.name),
-                        h("td", {}, ` $${player.balance}`),
+                    h("div", { 
+                        class: cc({
+                            "scorecard": true,
+                            "sender": index === state.senderID && state.senderID !== state.recipientID,
+                            "recipient": index === state.recipientID && state.senderID !== state.recipientID,
+                            "negative": player.balance < 0,
+                        }) 
+                    }, [
+                        h("div", { class: "scorecard__name" }, player.name),
+                        h("div", { 
+                            class: cc({
+                                "scorecard__balance": true,
+                            })
+                        }, [
+                            h("span", {}, "$"),
+                            h("span", {}, player.balance),
+                        ]),
                     ])
                 ))
             ]),
-            h("table", {}, [
-                h("tr", {}, [
-                    h("input", {type: "number", id: "inputAmount", value: state.inputAmount, oninput: event => actions.setInputAmount(event.target.value)})
+            h("section", { class: "sidebar" }, [
+                h("div", { class: "controls"}, [
+                    h("div", {class: "w-50"}, [
+                        h('label', {}, "Sender"),
+                        h("select", { oninput: event => actions.setSenderID(event.target.value)}, [
+                            h("option", {value: -1}, "Bank"),
+                            state.players.map(player => {
+                                let id = getPlayerIDByName(player.name, state.players)
+                                return h("option", {value: id, selected: id === state.senderID}, player.name)
+                            } ),
+                        ]),
+                    ]),
+
+                    h("div", {class: "w-50"}, [
+                        h('label', {}, "Recipient"),
+                        h("select", { oninput: event => actions.setRecipientID(event.target.value)}, [
+                            h("option", {value: -1}, "Bank"),
+                            state.players.map(player => {
+                                let id = getPlayerIDByName(player.name, state.players)
+                                return h("option", {value: id, selected: id === state.recipientID}, player.name)
+                            } ),
+                        ]),
+                    ]),
+                    h("input", {type: "number",value: state.transferAmount, oninput: event => actions.setTransferAmount(event.target.value)}),
+                    h("button", {onclick: () => actions.transferPlayerFunds({fromID: state.senderID, toID: state.recipientID, amount: state.transferAmount})}, "Transfer"),
                 ]),
-                h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Pay"})
-                ]),
-                h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Transfer", onclick: () => actions.transfer({fromID: 0, toID: 1, amount: 200})})
-                ]),
-                h("tr", {}, [
-                    h("input", {type: "", id: "inputName"})
-                ]),
-                h("tr", {}, [
-                    h("input", {type: "button", class: "button", value: "Add Player", onmousedown: ""})
+                // TODO
+                h("div", { class: "controls"}, [
+                    h("input", {type: ""}),
+                    h("button", {onmousedown: ""}, "Add Player"),
                 ])
             ])
         ])
@@ -107,10 +133,10 @@ const main = app(state, actions, view, document.body)
 
 /*
 main.addPlayer({name: "String", balance: startingBalance})
-main.setBalance({id: Int, balance: Int})
-main.transfer({fromID: Int, toID: Int, amount: Int})
+main.setPlayerBalance({id: Int, balance: Int})
+main.transferPlayerFunds({fromID: Int, toID: Int, amount: Int})
 */
 
-main.addPlayer({name: "joey", balance: startingBalance})
-main.addPlayer({name: "astrid", balance: startingBalance})
-// setTimeout(() => main.transfer({fromID: 0, toID: 1, amount: 200}), 1000)
+main.addPlayer({name: "joey"})
+main.addPlayer({name: "astrid"})
+main.addPlayer({balance: 50})
