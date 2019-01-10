@@ -213,7 +213,7 @@ const view = (state, actions) =>
                             state.players.map((player, index) => h("option", {value: index, selected: index === state.recipientID}, player.name))
                         ])
                     ]),
-                    h("input", {type: "textarea", /*value: state.transferAmount,*/ oninput: event => {
+                    h("input", {value: state.transferAmount != 0 ? state.transferAmount : "", oninput: event => {
                         event.target.value = event.target.value.replace(nums, "")
                         let amount = parseInt(event.target.value)
                         if (![NaN, 0].includes(amount)) {
