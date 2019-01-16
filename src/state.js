@@ -6,4 +6,5 @@ export const state = {
     transferAmount: 0,
     newPlayerName: "",
     history: [],
+    transactionHistory: [],
 }

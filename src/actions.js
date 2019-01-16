@@ -110,6 +110,7 @@ export const actions = {
                 actions.setPlayerBalance({id: toID, balance: parseInt(recipient.balance) + parseInt(amount)})
             }
 
+            actions.addTransactionToHistory({sender: fromID, recipient:toID, amount})
             actions.storePlayers()
         }
 
@@ -128,12 +129,49 @@ export const actions = {
 
     },
 
-    storePlayers: () => async state => {
+    storePlayers: () => state => {
         firebase.database().ref("players").set(state.players)
     },
 
-    addStoreState: () => async state => {
-        firebase.database().ref("states").push(state)
-    }
+    fetchPlayers: () => (state, actions) => {
+        firebase.database().ref('players').once('value').then(snapshot => {
+            actions.setPlayers(snapshot.val())
+        })
+    },
+
+    /**
+     * I was thinking more along the lines of
+     * having a list of transactions that's 
+     * stored in the database rather than 
+     * storing all the app data aswell. 
+     */
+     setTransactionHistory: transactionHistory => state => ({
+       ...state,
+       transactionHistory
+     }),
+     
+     addTransactionToHistory: transaction => (state, actions) => {
+       actions.setTransactionHistory([transaction, ...state.transactionHistory])
+       actions.storeTransactions()
+     },
+     
+     storeTransactions: () => state => {
+       firebase.database().ref("transactions").set(state.transactionHistory)
+     },
+     
+     fetchTransactions: () => (state, actions) => {
+         firebase.database().ref('transactions').once('value').then(snapshot => {
+             actions.setTransactionHistory(snapshot.val())
+         })
+     },
+
+     fetchData: () => (state, actions) => {
+         actions.fetchPlayers()
+         actions.fetchTransactions()
+     },
+     
+    // addStoreState: () => state => {
+    //     firebase.database().ref("states").push(state)
+    // }
 
 }

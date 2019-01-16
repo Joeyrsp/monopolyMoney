@@ -5,13 +5,13 @@ const startingBalance = 1500
 
 export const view = (state, actions) =>
 h("main", {
+    oncreate: actions.fetchData,
     // onkeyup: event => handleGlobalInput(event),
     onselectstart: event => {event.preventDefault()},
     oncontextmenu: event => {event.preventDefault()}
 }, [
     (() => {
-        // actions.addStoreState()
-        console.log(state)
+        console.log(state.transactionHistory)
     }),
     h("div", {class: "container"}, [
         h("section", {class: "scoreboard"}, [
