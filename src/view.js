@@ -1,14 +1,18 @@
 import { h } from "hyperapp"
 import cc from "classcat"
 
-const nums = /[^\d]/g
 const startingBalance = 1500
 
 export const view = (state, actions) =>
 h("main", {
-        /*onkeyup: event => handleGlobalInput(event), */
-        onselectstart: event => {event.preventDefault()}}, [
-    (() => console.log(state)),
+    // onkeyup: event => handleGlobalInput(event),
+    onselectstart: event => {event.preventDefault()},
+    oncontextmenu: event => {event.preventDefault()}
+}, [
+    (() => {
+        // actions.addStoreState()
+        console.log(state)
+    }),
     h("div", {class: "container"}, [
         h("section", {class: "scoreboard"}, [
             h("div", {
@@ -30,8 +34,8 @@ h("main", {
                 },
                 class: cc({
                     "scorecard": true,
-                    "sender": -1 === state.senderID /*&& state.senderID >= 0*/,
-                    "recipient": -1 === state.recipientID /*&& state.recipientID >= 0*/
+                    "sender": -1 === state.senderID,
+                    "recipient": -1 === state.recipientID
                 })
             }, [
                 h("div", {
@@ -98,7 +102,7 @@ h("main", {
                     ])
                 ]),
                 h("input", {value: state.transferAmount != 0 ? state.transferAmount : "", oninput: event => {
-                    event.target.value = event.target.value.replace(nums, "")
+                    event.target.value = event.target.value.replace(/[^\d]/g, "")
                     let amount = parseInt(event.target.value)
                     if (![NaN, 0].includes(amount)) {
                         actions.setTransferAmount(parseInt(event.target.value))
@@ -126,8 +130,8 @@ h("main", {
                 ])
             ]),
             h("div", { class: "controls"}, [
-                h("input", {type: "textarea", value: state.creationName, oninput: event => actions.setCreationName(event.target.value), onkeyup: event => {if (event.key == "Enter") {actions.addPlayer({name: state.creationName})}}}),
-                h("input", {type: "button", value: "Add Player", onclick: event => actions.addPlayer(state.creationName != "" ? {name: state.creationName} : {})}),
+                h("input", {type: "textarea", value: state.newPlayerName, oninput: event => actions.setNewPlayerName(event.target.value), onkeyup: event => {if (event.key == "Enter") {actions.addPlayer({name: state.newPlayerName})}}}),
+                h("input", {type: "button", value: "Add Player", onclick: event => actions.addPlayer(state.newPlayerName != "" ? {name: state.newPlayerName} : {})}),
                 h("select", {value: state.removalID, onchange: event => actions.setRemovalID(event.target.value)}, [
                     h("option", {value: -1}, "No-one"),
                     state.players.map((player, index) => h("option", {value: index}, player.name))

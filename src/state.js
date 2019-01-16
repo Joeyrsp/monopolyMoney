@@ -4,6 +4,6 @@ export const state = {
     recipientID: -1,
     removalID: -1,
     transferAmount: 0,
-    creationName: "",
+    newPlayerName: "",
     history: [],
 }

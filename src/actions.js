@@ -19,7 +19,7 @@ export const actions = {
         transferAmount: transferAmount
     }),
 
-    setCreationName: newPlayerName => state => ({
+    setNewPlayerName: newPlayerName => state => ({
         ...state,
         newPlayerName: newPlayerName
     }),
@@ -51,15 +51,15 @@ export const actions = {
 
     addPlayer: player => (state, actions) => {
 
-        actions.setPlayers([ 
-            ...state.players, 
-            { 
-                name: `Player ${state.players.length + 1}`, 
+        actions.setPlayers([
+            ...state.players,
+            {
+                name: `Player ${state.players.length + 1}`,
                 balance: startingBalance, ...player
             }
         ])
         actions.setNewPlayerName("")
-        actions.storePlayers("")
+        actions.storePlayers()
 
     },
 
@@ -67,17 +67,20 @@ export const actions = {
 
         let players = [ ...state.players ]
 
-        if (id != -1) {
+        console.log(players)
+        
+        if (id > 0) {
             players.splice(id, 1)
-            id = -1
         }
+
+        console.log(players)
 
         actions.setPlayers(players)
         actions.setSenderID(-1)
         actions.setRecipientID(-1)
         actions.setRemovalID(-1)
-        actions.storePlayers("")
-        
+        actions.storePlayers()
+
     },
 
     setPlayerBalance: ({id, balance}) => state => {
@@ -114,9 +117,7 @@ export const actions = {
 
     logHistory: value => state => {
 
-        
         let history = [ ...state.history ]
-        // console.log(history)
 
         history.unshift(value)
 
@@ -128,7 +129,11 @@ export const actions = {
     },
 
     storePlayers: () => async state => {
-        firebase.database().ref('players').set(state.players)
+        firebase.database().ref("players").set(state.players)
+    },
+
+    addStoreState: () => async state => {
+        firebase.database().ref("states").push(state)
     }
 
 }
