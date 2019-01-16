@@ -116,7 +116,7 @@ export const actions = {
 
         
         let history = [ ...state.history ]
-        console.log(history)
+        // console.log(history)
 
         history.unshift(value)
 
